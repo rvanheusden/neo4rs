@@ -259,18 +259,6 @@ impl Into<BoltType> for (chrono::NaiveDateTime, &str) {
     }
 }
 
-impl Into<BoltType> for Vec<u8> {
-    fn into(self) -> BoltType {
-        BoltType::Bytes(BoltBytes::new(self.into()))
-    }
-}
-
-impl Into<BoltType> for i64 {
-    fn into(self) -> BoltType {
-        BoltType::Integer(BoltInteger::new(self))
-    }
-}
-
 impl Into<BoltType> for String {
     fn into(self) -> BoltType {
         BoltType::String(self.into())
@@ -280,5 +268,35 @@ impl Into<BoltType> for String {
 impl Into<BoltType> for &str {
     fn into(self) -> BoltType {
         BoltType::String(self.into())
+    }
+}
+
+impl Into<BoltType> for bool {
+    fn into(self) -> BoltType {
+        BoltType::Boolean(BoltBoolean::new(self))
+    }
+}
+
+impl Into<BoltType> for i64 {
+    fn into(self) -> BoltType {
+        BoltType::Integer(BoltInteger::new(self))
+    }
+}
+
+impl Into<BoltType> for f64 {
+    fn into(self) -> BoltType {
+        BoltType::Float(BoltFloat::new(self))
+    }
+}
+
+impl<T: Into<BoltType>> Into<BoltType> for Vec<T> {
+    fn into(self) -> BoltType {
+        BoltType::List(self.into())
+    }
+}
+
+impl Into<BoltType> for Vec<u8> {
+    fn into(self) -> BoltType {
+        BoltType::Bytes(BoltBytes::new(self.into()))
     }
 }

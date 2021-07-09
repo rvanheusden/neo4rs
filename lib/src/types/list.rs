@@ -3,6 +3,7 @@ use crate::types::*;
 use crate::version::Version;
 use bytes::*;
 use std::cell::RefCell;
+use std::iter::FromIterator;
 use std::mem;
 use std::rc::Rc;
 
@@ -72,11 +73,20 @@ impl Into<Vec<String>> for BoltList {
     }
 }
 
-impl From<Vec<BoltType>> for BoltList {
-    fn from(xs: Vec<BoltType>) -> BoltList {
-        let mut list = BoltList::with_capacity(xs.len());
-        for x in xs.into_iter() {
-            list.push(x);
+impl<T: Into<BoltType>> From<Vec<T>> for BoltList
+where
+    T: Into<BoltType>,
+{
+    fn from(xs: Vec<T>) -> BoltList {
+        BoltList::from_iter(xs.into_iter())
+    }
+}
+
+impl<T: Into<BoltType>> FromIterator<T> for BoltList {
+    fn from_iter<I: IntoIterator<Item = T>>(iter: I) -> Self {
+        let mut list = BoltList::new();
+        for item in iter {
+            list.push(item.into());
         }
         list
     }
